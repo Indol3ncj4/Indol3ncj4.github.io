@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment: Land Cover Classification</title>
+    <style>
+        /* --- MODERN RESET AND DARK BASE STYLING --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b1519 0%, #060a0c 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* --- CONTEXT WRAPPER FRAMEWORK --- */
+        .mca-portfolio-card {
+            background: rgba(13, 27, 33, 0.85); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 900px; /* Optimal reading width for dense text sections */
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 
+                        0 0 0 1px rgba(78, 205, 196, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- NAVIGATION LINK --- */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            margin-bottom: 25px;
+        }
+
+        .back-btn:hover {
+            color: #4ecdc4;
+            transform: translateX(-4px);
+        }
+
+        /* --- THEMATIC HEADER BOX --- */
+        .assignment-header-box {
+            background: rgba(78, 205, 196, 0.05);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .assignment-header-box h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4ecdc4; 
+        }
+
+        /* --- MAIN CONTENT SECTIONS --- */
+        .stripe-title {
+            font-size: 1.25rem; 
+            color: #ffffff; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-top: 40px;
+            margin-bottom: 15px; 
+            border-bottom: 2px solid rgba(78, 205, 196, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .stripe-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .sub-question {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            margin-top: 25px;
+            color: #00f5d4; /* Vivid Neon Teal Highlight */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sub-question:first-of-type {
+            margin-top: 0;
+        }
+
+        .description-block {
+            font-size: 1rem;
+            color: #cbd5e1;
+            line-height: 1.65;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .bullet-list {
+            margin-left: 20px;
+            margin-bottom: 25px;
+            color: #cbd5e1;
+            line-height: 1.65;
+        }
+
+        .bullet-list li {
+            margin-bottom: 15px;
+        }
+
+        .bullet-list strong {
+            color: #ffffff;
+        }
+
+        /* Figure Container for Images */
+        .figure-box {
+            width: 100%;
+            background: rgba(6, 10, 12, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .graph-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.1);
+        }
+
+        .graph-caption {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* --- SHARP DIVIDER LINE --- */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, rgba(78,205,196,0) 0%, rgba(78,205,196,0.3) 50%, rgba(78,205,196,0) 100%);
+            margin: 40px 0;
+        }
+
+        /* --- NOTE HIGHLIGHT BOX --- */
+        .note-box {
+            background: rgba(200, 162, 200, 0.05);
+            border: 1px solid rgba(200, 162, 200, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .note-box strong {
+            color: #c8a2c8; /* Nice soft lavender/orchid accent */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mca-portfolio-card">
+        
+        <a href="index.html" class="back-btn">← Back to Workspace Hub</a>
+        
+        <div class="assignment-header-box">
+            <h1>Assignment: Land Cover Classification</h1>
+        </div>
+
+        <h2 class="stripe-title">Assignment Description</h2>
+        <p class="description-block">
+            For this assignment, we focused on identifying and classifying different types of land use by analysing spectral signatures collected through remote sensing. The aim was to use Sentinel-2 satellite data to distinguish between different land categories, including urban, recreational, historical, and agricultural areas. After analysing the data, we created a map that displayed each land use type with a different colour, making it easier to visualise and understand the distribution of different land features across the area.
+        </p>
+
+        <h2 class="stripe-title">What is Automated Land Cover Classification</h2>
+        <p class="description-block">
+            Imagine trying to manually draw borders around every single backyard, farm, forest, or road across your country. The amount of work and time it would take seems impossible, right?. That is wh Automated land cover classification is an important tool that uses machine learning to analyze aerial or satellite imagery and performs the categorization of landscapes into distinct groups like forests, water bodies, or urban areas in much shorter time
+        </p>
+
+        <h3 class="sub-question">Supervised vs. Unsupervised Classification</h3>
+        <p class="description-block">
+            There are two primary methods of classification:
+        </p>
+        <ul class="bullet-list">
+            <li>
+                <strong>Supervised Classification</strong> - This approach relies on user-defined training data. By marking a specific regions of interest (ROIs) representing known land cover types, the user defines the signatures for classes such as "Forest" or "Urban." Then the computer uses these examples to classify the rest of the image.
+            </li>
+            <li>
+                <strong>Unsupervised Classification:</strong> In unsupervised classiddication there is no initial user input. Without any training samples, the algorithm groups pixels together based purely on how similar their light reflectance values are. Once the computer creates these clusters, analysis steps in to label what those groups actually represent based on data they know.
+            </li>
+        </ul>
+
+        <h3 class="sub-question">Spatial Resolution</h3>
+        <p class="description-block">
+            The level of detail on the map depends entirely on the sensor's spatial resolution. In this dataset, the individual pixels are rectangular rather than square, measuring approximately 18.6 meters in width by 30 meters in length.
+        </p>
+        <p class="description-block">
+            <strong>What this means:</strong> A feature on the ground must be at least 18.6 x 30 m to occupy its own distinct pixel on the map.
+        </p>
+        <p class="description-block">
+            <strong>The Mixed Pixel Effect:</strong> If a single 18.6 x 30 m area contains both a patch of grass and a house roof, their colors blend together into a single pixel. This composite signature can sometimes cause minor classification errors along boundaries.
+        </p>
+
+        <div class="divider"></div>
+
+        <h2 class="stripe-title">Spectral Profile</h2>
+        <p class="description-block">
+            The chart below displays the unique "spectral signatures" or light reflectance values for four distinct land cover types. Because different materials reflect light differently across various satellite bands, these curves allow the software to tell them apart.
+        </p>
+        <div class="figure-box">
+            <img src="specprof.jpg" alt="Spectral signatures chart" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Spectral+Profile+Chart+Placeholder'">
+            <div class="graph-caption">Figure 1: Spectral profile signature curve distributions across active bands.</div>
+        </div>
+
+        <h2 class="stripe-title">Unsupervised Pixel-Based Classification</h2>
+        <p class="description-block">
+            This map shows the result of letting the computer automatically cluster pixels based on raw mathematical similarities. It has a characteristic granular, or "salt-and-pepper," appearance because adjacent pixels are categorized completely independently.
+        </p>
+        <div class="figure-box">
+            <img src="pic1.jpg" alt="Unsupervised pixel classification map" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Unsupervised+Pixel-Based+Map+Placeholder'">
+            <div class="graph-caption">Figure 2: Unsupervised pixel classification map</div>
+        </div>
+
+        <h2 class="stripe-title">Unsupervised Object-Based Classification</h2>
+        <p class="description-block">
+            Unlike the pixel method, object-based classification groups neighboring pixels into distinct "shapes" or objects based on both color and proximity before running the classification. This creates a much cleaner, more general map that more closely reflects how humans naturally draw boundaries.
+        </p>
+        <div class="figure-box">
+            <img src="pic2.jpg" alt="Unsupervised object classification map" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Unsupervised+Object-Based+Map+Placeholder'">
+            <div class="graph-caption">Figure 3: Unsupervised object classification map </div>
+        </div>
+
+        <h2 class="stripe-title">Supervised Pixel-Based Classification</h2>
+        <p class="description-block">
+            This map represents the final output generated after providing the software with custom training samples to guide its classification logic.
+        </p>
+        <div class="figure-box">
+            <img src="pic3.jpg" alt="Supervised pixel classification map" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Supervised+Pixel-Based+Map+Placeholder'">
+            <div class="graph-caption">Figure 4: Supervised pixel classification map</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2 class="stripe-title">Accuracy Assessment (The Confusion Matrix)</h2>
+        <p class="description-block">
+            A confusion matrix is a cross-tabulation grid used in remote sensing to assess the statistical accuracy of a land-cover map. It compares predicted map classes directly against real-world reference data (ground truth) to reveal exactly where the algorithm successfully identified features and where it got "confused” (like classifying forest as water).
+        </p>
+
+        <div class="note-box">
+            <p class="description-block" style="margin-bottom: 0;">
+                <strong>Project Note:</strong> While a confusion matrix is standard practice for validating data accuracy, I wasn’t able to perform it due to a persistent error.
+            </p>
+        </div>
+<div class="divider"></div>
+
+        <h2 class="stripe-title">Course Certificate</h2>
+        <div class="figure-box">
+            <img src="papers.jpg" alt="Course Completion Certificate" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Certificate+Image+Placeholder'">
+            <div class="graph-caption">Figure 5: ESRI Performing Supervised Pixel-Based Image Classification</div>
+        </div>
+    </div>
+
+</body>
+</html>
