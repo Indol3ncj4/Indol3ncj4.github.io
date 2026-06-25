@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment: Multi-Criteria Analysis (MCA)</title>
+    <style>
+        /* --- MODERN RESET AND DARK BASE STYLING (matches core aesthetic) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b1519 0%, #060a0c 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* --- CONTEXT WRAPPER FRAMEWORK --- */
+        .mca-portfolio-card {
+            background: rgba(13, 27, 33, 0.85); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 900px; /* Optimal reading width for dense text sections */
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 
+                        0 0 0 1px rgba(78, 205, 196, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- NAVIGATION LINK --- */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            margin-bottom: 25px;
+        }
+
+        .back-btn:hover {
+            color: #4ecdc4;
+            transform: translateX(-4px);
+        }
+
+        /* --- THEMATIC HEADER BOX --- */
+        .assignment-header-box {
+            background: rgba(78, 205, 196, 0.05);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .assignment-header-box h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: #ffffff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4ecdc4; 
+        }
+
+        /* --- MAIN CONTENT SECTIONS --- */
+        .stripe-title {
+            font-size: 1.25rem; 
+            color: #ffffff; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-top: 40px;
+            margin-bottom: 15px; 
+            border-bottom: 2px solid rgba(78, 205, 196, 0.2);
+            padding-bottom: 8px;
+        }
+
+        .stripe-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .sub-question {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            margin-top: 25px;
+            color: #00f5d4; /* Vivid Neon Teal Highlight */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sub-question:first-of-type {
+            margin-top: 0;
+        }
+
+        .description-block {
+            font-size: 1rem;
+            color: #cbd5e1;
+            line-height: 1.65;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .bullet-list {
+            margin-left: 20px;
+            margin-bottom: 25px;
+            color: #cbd5e1;
+            line-height: 1.65;
+        }
+
+        .bullet-list li {
+            margin-bottom: 10px;
+        }
+
+        .bullet-list strong {
+            color: #ffffff;
+        }
+
+        /* Figure Container for Images */
+        .figure-box {
+            width: 100%;
+            background: rgba(6, 10, 12, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .graph-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.1);
+        }
+
+        .graph-caption {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* --- SKILLS TAG WIDGET SYSTEM --- */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .skill-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.06);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* --- SHARP DIVIDER LINE --- */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, rgba(78,205,196,0) 0%, rgba(78,205,196,0.3) 50%, rgba(78,205,196,0) 100%);
+            margin: 40px 0;
+        }
+
+        /* --- REFERENCES LIST --- */
+        .references-title {
+            font-size: 1.1rem;
+            color: #c8a2c8; /* Soft lavender/orchid accent */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .references-list {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .references-list li {
+            margin-bottom: 12px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mca-portfolio-card">
+        
+        <a href="index.html" class="back-btn">← Back to Workspace Hub</a>
+        
+        <div class="assignment-header-box">
+            <h1>Assignment: MultiCriteria analysis (MCA)</h1>
+        </div>
+
+        <h2 class="stripe-title">Part 1: Explaining Multicriteria Analysis (MCA)</h2>
+
+        <h3 class="sub-question">1. What is multicriteria analysis (MCA)?</h3>
+        <p class="description-block">
+            Multi-Criteria Analysis (MCA) is a tool used to solve complex decision problems that involve multiple criteria, such as environmental impact, economic incentives, and social factors, which at times can be conflicting, and to combine them into a single, best possible outcome.
+        </p>
+
+        <div class="figure-box">
+            <img src="MCDASteps.jpg" alt="Flowchart showing the main MCDA steps" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Flowchart+Placeholder'">
+            <div class="graph-caption">Figure 1: Flowchart showing the main MCA steps (Government Analysis Function)</div>
+        </div>
+
+        <h3 class="sub-question">2. Why is MCA valuable in GIS?</h3>
+        <p class="description-block">
+            In real life, the projects tackled by environmental planners and managerial decisions are rarely straightforward and cannot be solved using isolated datasets. MCA allows scientists and decision makers to turn abstract ideas and criteria into spatial data layers. By overlaying these layers, the required trade-offs are easy to see and map out exactly where competing priorities can balance.
+        </p>
+
+        <div class="figure-box">
+            <img src="Examplematrix.jpg" alt="An example performance matrix" class="graph-image" onerror="this.src='https://via.placeholder.com/900x400/0d1b21/4ecdc4?text=Matrix+Placeholder'">
+            <div class="graph-caption">Figure 2: An example performance matrix (Government Analysis Function)</div>
+        </div>
+
+        <h3 class="sub-question">3. What types of questions can MCA help answer?</h3>
+        <p class="description-block">
+            MCA is crucial for questions that do not have a single “good” answer, but rather multiple suitable solutions with different advantages and disadvantages. For instance, a question like:
+        </p>
+        <p class="description-block" style="text-align: center; font-style: italic; color: #ffffff;">
+            "Where is the best place to build a new wind farm?"
+        </p>
+        <p class="description-block">
+            require MCA to balance maximizing energy potential with minimizing construction costs while avoiding harm to wildlife habitats.
+        </p>
+
+        <h2 class="stripe-title">Part 2: MCA Problem Workflow Design</h2>
+        
+        <p class="description-block">
+            <strong>Project Goal:</strong> Finding the best location for a new offshore wind farm in the Dutch sector of the North Sea, while maximizing energy production, minimizing environmental impacts, and construction costs.
+        </p>
+
+        <h3 class="sub-question">Criteria for Consideration:</h3>
+        <ul class="bullet-list">
+            <li>
+                <strong>Wind Speed</strong><br>
+                Areas with higher average wind speeds, such as far-offshore deep-water zones or the northernmost open-sea sectors, are preferred for generating more energy and improving the efficiency of the wind farm.
+            </li>
+            <li>
+                <strong>Water Depth</strong><br>
+                Moderately shallow waters are better in terms of turbine installation and maintenance costs.
+            </li>
+            <li>
+                <strong>Distance to Existing Power Infrastructure</strong><br>
+                Locations closer to existing coastal grid connection points reduce transmission losses and infrastructure costs.
+            </li>
+            <li>
+                <strong>Environmental Protection</strong><br>
+                Locations away from protected habitats and conservation zones are preferred to minimize impacts on biodiversity and comply with environmental regulations.
+            </li>
+            <li>
+                <strong>Fishing Activity</strong><br>
+                Areas with lower fishing activity help avoid interfering with commercial fisheries and other industries in the marine zone
+            </li>
+            <li>
+                <strong>Distance from Shore</strong><br>
+                Locations farther from the coastline are preferred because they reduce impacts on the well-being of coastal communities.
+            </li>
+        </ul>
+
+        <h3 class="sub-question">Required Data Layers:</h3>
+        <ul class="bullet-list">
+            <li><strong>Wind speed raster map</strong> to identify areas with the greatest energy-generation potential.</li>
+            <li><strong>Water depth raster</strong> to determine suitable installation depths.</li>
+            <li><strong>Marine protected area boundaries</strong> to exclude environmentally vulnerable regions.</li>
+            <li><strong>Fishing activity map</strong> to minimize conflicts with commercial fishing.</li>
+            <li><strong>Power infrastructure map</strong> showing offshore substations and coastal grid connection points.</li>
+            <li><strong>Coastline layer</strong> to calculate distance from shore.</li>
+        </ul>
+
+        <h3 class="sub-question">Workflow Implementation Steps</h3>
+        <ul class="bullet-list">
+            <li>
+                <strong>Data Preparation:</strong><br>
+                Collecting, cleaning, and converting datasets into a common format and coordinate system, ready to use in a GIS.
+            </li>
+            <li>
+                <strong>Criteria Analysis:</strong><br>
+                Analyzing important factors such as wind speed, water depth, and distance to power infrastructure and the coastline.
+            </li>
+            <li>
+                <strong>Applying Constraints:</strong><br>
+                Removing protected areas, fishing sites, and locations with unsuitable water depths.
+            </li>
+            <li>
+                <strong>Reclassifying Criteria:</strong><br>
+                Converting all criteria into a common suitability scale (e.g., 1–5).
+            </li>
+            <li>
+                <strong>Assigning Weights:</strong><br>
+                Assigning a weight to each criterion based on its relative importance to the project.
+            </li>
+            <li>
+                <strong>Suitability Assessment:</strong><br>
+                Combine all weighted criteria and constraints to produce a final suitability map showing the best locations for offshore wind farm development.
+            </li>
+        </ul>
+
+
+        <div class="divider"></div>
+
+        <h2 class="stripe-title">Skills &amp; Technologies Learned</h2>
+        <div class="tags-container">
+            <span class="skill-badge">Complex Decision Modeling</span>
+            <span class="skill-badge">Multi-Criteria Evaluation (MCE)</span>
+            <span class="skill-badge">Identifying and evaluating planning criteria</span>
+            <span class="skill-badge">Data Trade-off Understanding</span>
+            <span class="skill-badge">Data-driven decision-making</span>
+            <span class="skill-badge">Structuring a GIS-based planning workflow</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2 class="references-title">References List</h2>
+        <ul class="references-list">
+            <li>Government Analysis Function. “An Introductory Guide to Multi-Criteria Decision Analysis (MCDA) – Government Analysis Function.” Analysisfunction.civilservice.gov.uk, 1 May 2024, analysisfunction.civilservice.gov.uk/policy-store/an-introductory-guide-to-mcda/.</li>
+            <li>Gusatu, Laura Florentina, et al. “A Spatial Analysis of the Potentials for Offshore Wind Farm Locations in the North Sea Region: Challenges and Opportunities.” ISPRS International Journal of Geo-Information, vol. 9, no. 2, 4 Feb. 2020, p. 96, https://doi.org/10.3390/ijgi9020096.</li>
+            <li>Malczewski, Jacek, and Piotr Jankowski. “Emerging Trends and Research Frontiers in Spatial Multicriteria Analysis.” International Journal of Geographical Information Science, vol. 34, no. 7, 14 Jan. 2020, pp. 1257–1282, https://doi.org/10.1080/13658816.2020.1712403.</li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
