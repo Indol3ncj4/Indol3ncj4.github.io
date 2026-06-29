@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>SDG Map Goal 5: Gender Equality</title>
+    
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <style>
+        /* Shared Core Aesthetic Framework from Main Hub */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0b1519 0%, #060a0c 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Consistent Main Wrapper Framework */
+        .portfolio-card {
+            background: rgba(13, 27, 33, 0.85); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 
+                        0 0 0 1px rgba(78, 205, 196, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Top Header Styling Zone */
+        .sdg-header-box {
+            background: rgba(78, 205, 196, 0.05);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .sdg-header-box h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: #ffffff;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .sdg-highlight {
+            color: #4ecdc4;
+            font-weight: 700;
+        }
+
+        /* Map UI Frame Elements */
+        #map { 
+            width: 100%; 
+            height: 500px; 
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+            z-index: 1;
+        }
+
+        /* --- VISUAL CAPTION CONTAINERS --- */
+        .map-caption-box {
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 35px;
+        }
+
+        .map-caption-text {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* --- STATIC MAP CONTAINER --- */
+        .static-map-container {
+            width: 100%;
+            background: rgba(6, 10, 12, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .static-map-img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.1);
+        }
+
+        /* Interactive Leaflet Widget Adjustments to Match Theme */
+        .info { 
+            padding: 10px 14px; 
+            font-size: 0.9rem;
+            background: rgba(13, 27, 33, 0.95) !important; 
+            border: 1px solid rgba(78, 205, 196, 0.3) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important; 
+            border-radius: 10px; 
+            color: #e2e8f0 !important;
+        } 
+        
+        .info h4 { 
+            margin: 0 0 6px; 
+            color: #4ecdc4 !important; 
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .legend { 
+            text-align: left; 
+            line-height: 20px; 
+            color: #94a3b8 !important; 
+        } 
+        
+        .legend i { 
+            width: 16px; 
+            height: 16px; 
+            float: left; 
+            margin-right: 10px; 
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Section Layout Substructures */
+        .section-title {
+            font-size: 1.1rem; 
+            color: #4ecdc4; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin-bottom: 12px; 
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .description-text {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        /* Skills Tag Widget System */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+            margin-top: 15px;
+        }
+
+        .skill-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.06);
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            padding: 6px 12px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Navigation Action Link Element */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            color: #4ecdc4;
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portfolio-card">
+        
+        <a href="index.html" class="back-btn">← Back to Workspace Hub</a>
+
+        <div class="sdg-header-box">
+            <h2>
+                <span class="sdg-highlight">SDG 5:</span> Achieve gender equality and empower all women and girls<br>
+                <span style="font-size: 0.95rem; font-weight: 400; color: #94a3b8; display: inline-block; margin-top: 8px;">
+                    Target 5.5: Ensure women’s full and effective participation and equal opportunities for leadership at all levels.
+                </span>
+            </h2>
+        </div>
+
+        <div id="map"></div>
+        
+        <div class="map-caption-box">
+            <div class="map-caption-text">Figure 1: Interactive geospatial rendering of international management data matrices.</div>
+        </div>
+
+        <div class="static-map-container">
+            <img src="onzkobieta_final.jpg" alt="Static Choropleth Map - SDG Indicator 5.5.2" class="static-map-img" onerror="this.src='https://via.placeholder.com/900x450/0d1b21/4ecdc4?text=Static+Choropleth+Map+Placeholder'">
+        </div>
+        
+        <div class="map-caption-box">
+            <div class="map-caption-text">Figure 2: High-resolution static rendering of global management gender distribution models.</div>
+        </div>
+
+        <h3 class="section-title">Assignment Description</h3>
+        <p class="description-text">
+		The project consisted of choosing one of the UN’s SDG indicators and creating a choropleth map of it. Making a choropleth map would highlight clearly which nations are achieving these indicators. A choropleth map uses differences in shading, coloring, or the placement of symbols within predefined areas to indicate data values in those areas. The difference in attribute values is typically shown by a visual variable, such as color, which ranges from light to dark.
+I decided to make a choropleth map covering indicator 5.5.2, which is the proportion of women in managerial positions. This indicator measures the proportion of women in decision-making roles across the executive, legislative, and judicial branches of government, as well as in the management of public and private enterprises. I chose to focus on this instead of just tracking national parliaments because it offers a more comprehensive and representative view of women's leadership across the board. 
+        </p>
+
+        <h3 class="section-title">Methods</h3>
+        <p class="description-text">	
+The methodology for this project involved selecting a relevant indicator from the UN Sustainable Development Goals (SDG) database and processing it into a visual format. I chose to focus on SDG Target 5.5, which aims to ensure women's full and effective participation and equal opportunities for leadership. To map this, I selected indicator 5.5.2 - the proportion of women in managerial positions.  
+To build the map, I downloaded the official dataset from the UN Database and cleaned it. I then used QGIS to import the data as vector layers and edited their properties. Most of the time, I spent working with the attribute table properties to link statistical data to the map. For the visual design, I created a color palette that alludes to femininity (especially in Western context) but still remains neutral by using the color pink. I made sure it ensures accessibility for people with visual impairments, including colorblindness. I also used a specific bold border style to explicitly highlight countries where women occupy 50% or more of managerial roles. 
+
+        </p>
+
+        <h3 class="section-title">Results &amp; Findings</h3>
+        <p class="description-text">
+		The final choropleth map successfully displays the global distribution of women in senior and middle management roles for the year 2023. By mapping the data on a country-wide scale, distinct regional trends and data hotspots are clearly visible. The map shows that while many nations still have low to moderate percentages of women in leadership, several countries stand out as significant hotspots where women hold the majority of managerial positions. While these national averages effectively highlight countries making progress towards fulfilling target 5.5, they also show many data gaps, with many countries not having data on this indicator, making it not fully representative and comparable Furthermore, because the data is presented at a macro level, it likely masks internal regional disproportions variations between urban and rural areas, and does not show underlying sector correlations, like whether a high percentage is driven by a systemic push or a heavy economic reliance on the healthcare and service industries and fields traditionally occupied by women.
+        </p>
+
+        <h3 class="section-title">Reflection</h3>
+        <p class="description-text">
+            Making this map made me gain many skills – I learned how to operate many tools in
+QGIS. I managed to download and clean data from UN Database and add it as vector
+layers and then edit their properties. I also worked a lot with attribute table properties.
+What I found really fun is learning how to pick the color palette and visuals in more
+insightful way than just considering the aesthetics but combining it with representing a
+specific message and considering people with visual impairments like colorblindness,
+which I unfortunately never really focused on before in my graphical designs. I also learned basics of html and how to code a website,although I did support myself with Gemini to improve the basic code in order to make my website more neat and organize 
+        </p>
+
+        <h3 class="section-title">Skills &amp; Technologies Learned</h3>
+        <div class="skills-container">
+            <span class="skill-badge">Using UN SDG Indicators Database</span>
+            <span class="skill-badge">Data Cleaning</span>
+            <span class="skill-badge">QGIS Operation</span>
+            <span class="skill-badge">Data Classification</span>
+            <span class="skill-badge">Accessible Design</span>
+            <span class="skill-badge">Data Visualisation and Analysis</span>
+        </div>
+
+    </div>
+
+    <script type="text/javascript" src="Data.js"></script>
+    <script type="text/javascript">
+
+        // Base Map Optimization Instantiation 
+        const map = L.map('map').setView([20, 0], 2);
+
+        // Dark-thematic Basemap implementation to pull everything together cleanly
+        const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        }).addTo(map);
+
+        // Info Display Hover Widget Configuration
+        const info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+
+        info.update = function (props) {
+            const contents = props ? `<b>${props.nam_en}</b><br />${props.SDG_Field} % of women occupying senior and middle management roles relative to all management positions in a country; 2023` : 'Hover over a state';
+            this._div.innerHTML = `<h4>Figure 1: 5.5.2 Proportion of women in managerial positions (Interactive)</h4>${contents}`;
+        };
+
+        info.addTo(map);
+
+        // Hex Dynamic Classification Color Assignment Matrix
+        function getColor(d) {
+            return d === null || isNaN(d) ? '#334155' : 
+                d > 45  ? '#8b0046' :
+                d > 36  ? '#d81b60' :
+                d > 31  ? '#df73a4' :
+                d > 25  ? '#cc99cc' :
+                d > 15  ? '#ebd6eb' :
+                d > 0   ? '#f2f0f5' : '#1e293b';
+        }
+
+        // Feature Polygons Base Weight Profiles
+        function style(feature) {
+            return {
+                weight: 1.5,
+                opacity: 1,
+                color: '#1e293b', 
+                dashArray: '',
+                fillOpacity: 0.8,
+                fillColor: getColor(feature.properties.SDG_Field)
+            };
+        }
+
+        function highlightFeature(e) {
+            const layer = e.target;
+            layer.setStyle({
+                weight: 3,
+                color: '#4ecdc4', 
+                dashArray: '',
+                fillOpacity: 0.85
+            });
+            layer.bringToFront();
+            info.update(layer.feature.properties);
+        }
+
+        const geojson = L.geoJson(nationData, {
+            style,
+            onEachFeature
+        }).addTo(map);
+
+        function resetHighlight(e) {
+            geojson.resetStyle(e.target);
+            info.update();
+        }
+
+        function zoomToFeature(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: zoomToFeature
+            });
+        }
+
+        map.attributionControl.addAttribution('SDG data &copy; <a href="https://unstats-undesa.opendata.arcgis.com/">UN SDG DataHub</a>');
+
+        // Map Legend Data Output Array Generation
+        const legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'info legend');
+            const intervals = [
+                '0 &ndash; 15%', 
+                '15 &ndash; 25%', 
+                '25 &ndash; 31%', 
+                '31 &ndash; 36%', 
+                '36 &ndash; 45%', 
+                '45 &ndash; 70.1%'
+            ];
+            
+            const colors = ['#f2f0f5', '#ebd6eb', '#cc99cc', '#df73a4', '#d81b60', '#8b0046'];
+            const labels = [];
+
+            for (let i = 0; i < intervals.length; i++) {
+                labels.push(`<i style="background:${colors[i]}"></i> ${intervals[i]}`);
+            }
+
+            labels.push(`<i style="background:#334155"></i> No Data`);
+            div.innerHTML = labels.join('<br>');
+            return div;
+        };
+
+        legend.addTo(map);
+
+    </script>
+</body>
+</html>
